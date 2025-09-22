@@ -1,0 +1,89 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Settings - Admin Panel{% endblock %}
+{% block page_title %}Admin Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user-shield mr-2"></i>Admin Accounts</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Last Login</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for admin in admins %}
+                            <tr>
+                                <td>{{ admin.username }}</td>
+                                <td>{{ admin.email }}</td>
+                                <td>
+                                    {% if admin.is_super_admin %}
+                                        <span class="badge badge-warning">Super Admin</span>
+                                    {% else %}
+                                        <span class="badge badge-info">Admin</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if admin.last_login %}
+                                        {{ admin.last_login.strftime('%b %d, %Y') }}
+                                    {% else %}
+                                        <span class="text-muted">Never</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ admin.created_at.strftime('%b %d, %Y') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-plus mr-2"></i>Create New Admin</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin_create_admin') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group">
+                        {{ form.username.label(class="font-weight-bold") }}
+                        {{ form.username(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.email.label(class="font-weight-bold") }}
+                        {{ form.email(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.password.label(class="font-weight-bold") }}
+                        {{ form.password(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group form-check">
+                        {{ form.is_super_admin(class="form-check-input") }}
+                        {{ form.is_super_admin.label(class="form-check-label") }}
+                    </div>
+                    
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

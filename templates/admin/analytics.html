@@ -1,0 +1,85 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Analytics - Admin Panel{% endblock %}
+{% block page_title %}Platform Analytics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line mr-2"></i>Monthly User Registrations</h5>
+            </div>
+            <div class="card-body">
+                {% if monthly_users %}
+                    {% for month_data in monthly_users %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ month_data.month }}</span>
+                        <span class="font-weight-bold">{{ month_data.count }} users</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No registration data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar mr-2"></i>Monthly Expense Totals</h5>
+            </div>
+            <div class="card-body">
+                {% if monthly_expense_totals %}
+                    {% for month_data in monthly_expense_totals %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ month_data.month }}</span>
+                        <span class="font-weight-bold text-success">₹{{ "%.2f"|format(month_data.total) }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No expense data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle mr-2"></i>Platform Statistics</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Analytics dashboard showing platform usage trends and user activity patterns.</p>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h4 class="text-primary">{{ monthly_users|length }}</h4>
+                        <p class="text-muted">Active Months</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-success">{{ monthly_expense_totals|length }}</h4>
+                        <p class="text-muted">Expense Months</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-info">
+                            {% set total_users = monthly_users|sum(attribute='count') %}
+                            {{ total_users or 0 }}
+                        </h4>
+                        <p class="text-muted">Total Registrations</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h4 class="text-warning">
+                            {% set total_amount = monthly_expense_totals|sum(attribute='total') %}
+                            ₹{{ "%.0f"|format(total_amount or 0) }}
+                        </h4>
+                        <p class="text-muted">Total Expenses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

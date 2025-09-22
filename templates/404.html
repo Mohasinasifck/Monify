@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found - Monify{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-blur-bg"></div>
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6">
+                <div class="error-card">
+                    <div class="error-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h1 class="error-title">404</h1>
+                    <h3 class="error-subtitle">Page Not Found</h3>
+                    <p class="error-description">
+                        The page you're looking for doesn't exist or has been moved.
+                    </p>
+                    <div class="error-actions">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-home mr-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{{ url_for('expenses') }}" class="btn btn-outline-primary btn-lg ml-3">
+                            <i class="fas fa-receipt mr-2"></i>View Expenses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-container {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 0;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.error-blur-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="45" r="3" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="75" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+}
+
+.error-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 60px 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.error-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #e74c3c, #fd79a8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3);
+}
+
+.error-title {
+    font-size: 6rem;
+    font-weight: 900;
+    color: #2D3748;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.error-subtitle {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 20px;
+}
+
+.error-description {
+    font-size: 1.1rem;
+    color: #718096;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-outline-primary {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline-primary:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-3px);
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .error-card {
+        padding: 40px 25px;
+        margin: 20px;
+    }
+    
+    .error-title {
+        font-size: 4rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+{% endblock %}

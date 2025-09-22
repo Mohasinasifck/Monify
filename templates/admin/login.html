@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin Portal - Monify</title>
+    
+    <!-- Enhanced Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Enhanced Admin Login Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background Elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="45" r="3" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="75" r="2" fill="rgba(255,255,255,0.08)"/><circle cx="20" cy="80" r="1.5" fill="rgba(255,255,255,0.06)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        /* Enhanced Login Container */
+        .admin-login-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 20px;
+        }
+        
+        .admin-login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            padding: 50px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .admin-login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .admin-login-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Enhanced Logo Section */
+        .admin-logo {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .admin-logo-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .admin-logo-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.5);
+        }
+        
+        .admin-logo-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .admin-logo h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2D3748;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        
+        .admin-logo p {
+            color: #718096;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        /* Enhanced Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #2D3748;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            display: block;
+        }
+        
+        .form-control {
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 16px 18px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #2D3748;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: white;
+            transform: translateY(-1px);
+        }
+        
+        .form-control::placeholder {
+            color: #A0AEC0;
+            font-weight: 400;
+        }
+        
+        /* Enhanced Button */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a42a0);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        /* Enhanced Alert Messages */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+            color: #155724;
+            border-left-color: #28a745;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
+            color: #0c5460;
+            border-left-color: #17a2b8;
+        }
+        
+        /* Error Messages */
+        .text-danger {
+            color: #e53e3e !important;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 6px;
+            display: block;
+        }
+        
+        /* Back Link */
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-link a {
+            color: #718096;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-link a:hover {
+            color: #667eea;
+            text-decoration: none;
+            transform: translateX(-5px);
+        }
+        
+        /* Loading State */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Security Badge */
+        .security-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 576px) {
+            .admin-login-card {
+                margin: 20px;
+                padding: 40px 30px;
+            }
+            
+            .admin-logo h2 {
+                font-size: 1.8rem;
+            }
+            
+            .admin-logo-icon {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .admin-logo-icon i {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="admin-login-card fade-in">
+            <!-- Security Badge -->
+            <div class="security-badge">
+                <i class="fas fa-shield-check"></i>
+                <span>Secure Portal</span>
+            </div>
+            
+            <!-- Enhanced Logo Section -->
+            <div class="admin-logo slide-up">
+                <div class="admin-logo-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h2>Admin Portal</h2>
+                <p>Secure access to Monify Administration</p>
+            </div>
+            
+            <!-- Enhanced Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} slide-up" role="alert">
+                            <i class="fas fa-{% if category == 'danger' %}exclamation-triangle{% elif category == 'success' %}check-circle{% elif category == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} mr-2"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Enhanced Login Form -->
+            <form method="POST" id="adminLoginForm" class="slide-up">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    <div class="input-group">
+                        {{ form.email(class="form-control", placeholder="Enter your admin email address", autocomplete="username") }}
+                    </div>
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <small class="text-danger">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                            </small>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    {{ form.password.label(class="form-label") }}
+                    <div class="input-group">
+                        {{ form.password(class="form-control", placeholder="Enter your secure password", autocomplete="current-password") }}
+                    </div>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <small class="text-danger">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                            </small>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                {{ form.submit(class="btn btn-primary btn-block btn-lg", value="Access Admin Portal") }}
+            </form>
+            
+            <!-- Enhanced Back Link -->
+            <div class="back-link">
+                <a href="{{ url_for('home') if url_for('home') else '/' }}">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Return to Main Application</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Enhanced form handling
+        $(document).ready(function() {
+            // Form submission with loading state
+            $('#adminLoginForm').on('submit', function() {
+                const submitBtn = $(this).find('input[type="submit"]');
+                submitBtn.addClass('btn-loading');
+                submitBtn.prop('disabled', true);
+                
+                // Re-enable button after 5 seconds (in case of error)
+                setTimeout(function() {
+                    submitBtn.removeClass('btn-loading');
+                    submitBtn.prop('disabled', false);
+                }, 5000);
+            });
+            
+            // Enhanced input focus effects
+            $('.form-control').on('focus', function() {
+                $(this).parent().addClass('input-focused');
+            }).on('blur', function() {
+                $(this).parent().removeClass('input-focused');
+            });
+            
+            // Auto-dismiss alerts after 5 seconds
+            $('.alert').each(function(index) {
+                const alert = $(this);
+                setTimeout(function() {
+                    alert.fadeOut(300, function() {
+                        alert.remove();
+                    });
+                }, 5000 + (index * 500)); // Stagger dismissal
+            });
+            
+            // Keyboard navigation enhancement
+            $(document).keydown(function(e) {
+                // Enter key on email field moves to password
+                if (e.which === 13 && document.activeElement === $('#email')[0]) {
+                    e.preventDefault();
+                    $('#password').focus();
+                }
+            });
+            
+            // Security features
+            let loginAttempts = sessionStorage.getItem('adminLoginAttempts') || 0;
+            
+            $('#adminLoginForm').on('submit', function(e) {
+                loginAttempts++;
+                sessionStorage.setItem('adminLoginAttempts', loginAttempts);
+                
+                // Rate limiting simulation (optional)
+                if (loginAttempts > 3) {
+                    console.log('Multiple login attempts detected');
+                }
+            });
+            
+            // Clear attempts on successful login
+            {% if request.endpoint == 'admin_dashboard' %}
+                sessionStorage.removeItem('adminLoginAttempts');
+            {% endif %}
+        });
+        
+        // Enhanced animations
+        function addEntryAnimations() {
+            $('.fade-in').css({
+                'animation-delay': '0.2s'
+            });
+            
+            $('.slide-up').each(function(index) {
+                $(this).css({
+                    'animation-delay': (0.4 + index * 0.1) + 's'
+                });
+            });
+        }
+        
+        // Initialize animations
+        $(window).on('load', function() {
+            addEntryAnimations();
+        });
+    </script>
+</body>
+</html>

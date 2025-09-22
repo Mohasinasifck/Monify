@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% block title %}Manage Categories - Monify{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="overview-container">
+        <h2 class="overview-title">
+            <i class="fas fa-tags mr-3"></i>Manage Categories
+        </h2>
+        
+        <div class="row">
+            <!-- Add Category Form -->
+            <div class="col-md-6">
+                <div class="category-form-card">
+                    <h5><i class="fas fa-plus-circle mr-2"></i>Add New Category</h5>
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            {{ form.name.label(class="form-label") }}
+                            {{ form.name(class="form-control category-input", placeholder="e.g., Groceries, Entertainment") }}
+                            {% if form.name.errors %}
+                                {% for error in form.name.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.icon.label(class="form-label") }}
+                            {{ form.icon(class="form-control category-input", onchange="updatePreview()") }}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.color.label(class="form-label") }}
+                            {{ form.color(class="form-control category-input", onchange="updatePreview()") }}
+                        </div>
+                        
+                        <!-- Live Preview -->
+                        <div class="category-preview">
+                            <h6>Preview:</h6>
+                            <div class="preview-category">
+                                <div class="preview-icon" id="previewIcon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <span id="previewName">Your Category</span>
+                            </div>
+                        </div>
+                        
+                        {{ form.submit(class="btn btn-primary btn-block category-btn") }}
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Categories List -->
+            <div class="col-md-6">
+                <div class="categories-list-card">
+                    <h5><i class="fas fa-list mr-2"></i>Your Categories</h5>
+                    {% if categories %}
+                    <div class="categories-grid">
+                        {% for category in categories %}
+                        <div class="category-item">
+                            <div class="category-icon-display" style="background-color: {{ category.color }};">
+                                <i class="{{ category.icon }}"></i>
+                            </div>
+                            <div class="category-info">
+                                <div class="category-name">{{ category.name }}</div>
+                                <div class="category-meta">
+                                    {{ category.expenses|length }} expenses
+                                </div>
+                            </div>
+                            <div class="category-actions">
+                                <form method="POST" action="{{ url_for('delete_category', category_id=category.id) }}" style="display: inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Delete category {{ category.name }}?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-categories">
+                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No categories yet</p>
+                        <p class="text-muted">Create your first category to get started!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updatePreview() {
+    const nameInput = document.querySelector('input[name="name"]');
+    const iconSelect = document.querySelector('select[name="icon"]');
+    const colorSelect = document.querySelector('select[name="color"]');
+    
+    const previewIcon = document.getElementById('previewIcon');
+    const previewName = document.getElementById('previewName');
+    
+    // Update icon
+    previewIcon.innerHTML = `<i class="${iconSelect.value}"></i>`;
+    previewIcon.style.backgroundColor = colorSelect.value;
+    
+    // Update name
+    previewName.textContent = nameInput.value || 'Your Category';
+}
+
+// Update preview when name changes
+document.querySelector('input[name="name"]').addEventListener('input', updatePreview);
+
+// Initialize preview
+document.addEventListener('DOMContentLoaded', updatePreview);
+</script>
+
+<style>
+.category-form-card, .categories-list-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    height: fit-content;
+}
+
+.category-form-card h5, .categories-list-card h5 {
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.category-input {
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.category-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.category-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 0;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.category-preview {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.category-preview h6 {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.preview-category {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.preview-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    background: #667eea;
+}
+
+#previewName {
+    font-weight: 600;
+    color: #333;
+}
+
+.categories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.category-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.category-icon-display {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    margin-right: 15px;
+}
+
+.category-info {
+    flex: 1;
+}
+
+.category-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.category-meta {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.category-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.empty-categories {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .category-form-card, .categories-list-card {
+        padding: 20px;
+    }
+    
+    .categories-grid {
+        max-height: 300px;
+    }
+}
+</style>
+{% endblock %}

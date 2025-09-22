@@ -1,0 +1,598 @@
+{% extends 'base.html' %}
+{% block title %}Edit Expense - Monify{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-blur-bg"></div>
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6">
+                <div class="form-card">
+                    <div class="form-header">
+                        <div class="form-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h2 class="form-title">Edit Expense</h2>
+                        <p class="form-subtitle">Update your expense details</p>
+                    </div>
+                    
+                    <div class="form-body">
+                        <!-- Flash Messages -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }} alert-dismissible fade show mb-4">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <span>&times;</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <form method="POST" class="needs-validation" novalidate>
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="form-form-group">
+                                <label class="form-label">{{ form.description.label.text }}</label>
+                                <div class="input-with-icon">
+                                    {{ form.description(class="form-input", placeholder="What did you spend on?", required="true") }}
+                                    <i class="fas fa-align-left input-icon"></i>
+                                </div>
+                                {% if form.description.errors %}
+                                    {% for error in form.description.errors %}
+                                        <small class="text-danger">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="invalid-feedback">
+                                    Please provide an expense description.
+                                </div>
+                            </div>
+                            
+                            <div class="form-form-group">
+                                <label class="form-label">{{ form.amount.label.text }}</label>
+                                <div class="input-with-currency">
+                                    <span class="currency-symbol">₹</span>
+                                    {{ form.amount(class="form-input form-input-currency", placeholder="0.00", required="true", step="0.01", min="0") }}
+                                    <i class="fas fa-rupee-sign input-icon-currency"></i>
+                                </div>
+                                {% if form.amount.errors %}
+                                    {% for error in form.amount.errors %}
+                                        <small class="text-danger">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="invalid-feedback">
+                                    Please enter a valid amount.
+                                </div>
+                            </div>
+                            
+                            <div class="form-form-group">
+                                <label class="form-label">{{ form.date.label.text }}</label>
+                                <div class="input-with-icon">
+                                    {{ form.date(class="form-input", type="date", required="true") }}
+                                    <i class="fas fa-calendar-alt input-icon"></i>
+                                </div>
+                                {% if form.date.errors %}
+                                    {% for error in form.date.errors %}
+                                        <small class="text-danger">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="invalid-feedback">
+                                    Please select a date.
+                                </div>
+                            </div>
+                            
+                            <div class="form-form-group">
+                                <label class="form-label">{{ form.category.label.text }}</label>
+                                <div class="input-with-icon">
+                                    {{ form.category(class="form-input form-select", required="true") }}
+                                    <i class="fas fa-tags input-icon"></i>
+                                </div>
+                                {% if form.category.errors %}
+                                    {% for error in form.category.errors %}
+                                        <small class="text-danger">{{ error }}</small>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="invalid-feedback">
+                                    Please select a category.
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="form-btn form-btn-success mb-3">
+                                    <span class="btn-text">
+                                        <i class="fas fa-save mr-2"></i>Update Expense
+                                    </span>
+                                    <div class="btn-loader" style="display: none;">
+                                        <div class="spinner-border spinner-border-sm" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                </button>
+                                
+                                <a href="{{ url_for('expenses') }}" class="form-btn form-btn-outline">
+                                    <i class="fas fa-arrow-left mr-2"></i>Back to Expenses
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Enhanced Form Styles - Clean White Background */
+.form-container {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.form-blur-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1.5" fill="rgba(102,126,234,0.08)"/><circle cx="75" cy="45" r="2" fill="rgba(118,75,162,0.05)"/><circle cx="50" cy="75" r="1" fill="rgba(102,126,234,0.06)"/><circle cx="20" cy="80" r="1.2" fill="rgba(118,75,162,0.04)"/></svg>');
+}
+
+.form-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 500px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+}
+
+.form-header {
+    text-align: center;
+    padding: 40px 40px 25px 40px;
+    background: linear-gradient(135deg, rgba(255, 167, 38, 0.06) 0%, rgba(255, 152, 0, 0.04) 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.form-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 8px 20px rgba(255, 167, 38, 0.3);
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 167, 38, 0.4);
+}
+
+.form-icon i {
+    font-size: 1.7rem;
+    color: white;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.form-subtitle {
+    color: #718096;
+    font-size: 0.95rem;
+    margin: 0;
+    font-weight: 400;
+}
+
+.form-body {
+    padding: 30px 40px 40px 40px;
+}
+
+.form-form-group {
+    margin-bottom: 1.8rem;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2D3748;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    padding: 16px 18px 16px 50px;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #2D3748;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #ffa726;
+    box-shadow: 0 0 0 4px rgba(255, 167, 38, 0.1);
+    background: white;
+    transform: translateY(-1px);
+}
+
+.form-input::placeholder {
+    color: #A0AEC0;
+}
+
+.input-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A0AEC0;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.form-input:focus + .input-icon {
+    color: #ffa726;
+}
+
+/* Currency Input Styling */
+.input-with-currency {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffa726;
+    font-weight: 600;
+    font-size: 1.1rem;
+    z-index: 3;
+}
+
+.form-input-currency {
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+}
+
+.input-icon-currency {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A0AEC0;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.form-input-currency:focus + .input-icon-currency {
+    color: #ffa726;
+}
+
+/* Select Styling */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 50px !important;
+}
+
+/* Button Styling */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-btn {
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-btn-success {
+    background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);
+    color: white;
+    box-shadow: 0 6px 12px rgba(255, 167, 38, 0.3);
+}
+
+.form-btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 167, 38, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.form-btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+    box-shadow: none;
+}
+
+.form-btn-outline:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+}
+
+/* Form validation styles */
+.was-validated .form-input:invalid {
+    border-color: #E53E3E;
+}
+
+.was-validated .form-input:invalid:focus {
+    box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1);
+}
+
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #E53E3E;
+}
+
+.was-validated .form-input:invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.alert-success {
+    color: #0F5132;
+    background-color: #D1E7DD;
+    border-color: #BADBCC;
+}
+
+.alert-danger {
+    color: #842029;
+    background-color: #F8D7DA;
+    border-color: #F5C2C7;
+}
+
+.alert-dismissible {
+    padding-right: 3rem;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem 1.25rem;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .form-card {
+        margin: 20px;
+        border-radius: 16px;
+    }
+    
+    .form-header, .form-body {
+        padding: 30px 25px;
+    }
+    
+    .form-title {
+        font-size: 1.6rem;
+    }
+    
+    .form-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .form-icon i {
+        font-size: 1.4rem;
+    }
+    
+    .form-input {
+        padding: 14px 16px 14px 45px;
+    }
+    
+    .form-btn {
+        padding: 14px 20px;
+    }
+}
+
+/* Animation for form elements */
+.form-form-group {
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+    transform: translateY(15px);
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Staggered delays for each form element */
+.form-form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-form-group:nth-child(4) { animation-delay: 0.4s; }
+
+.form-actions {
+    animation: fadeInUp 0.6s ease 0.5s forwards;
+    opacity: 0;
+    transform: translateY(15px);
+}
+
+/* Input focus effects */
+.form-input {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-input:focus {
+    transform: translateY(-2px);
+}
+
+.form-form-group:hover .input-icon {
+    color: #ffa726;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Success state */
+.form-input:valid {
+    border-color: #28a745;
+}
+
+.form-input:valid + .input-icon {
+    color: #28a745;
+}
+</style>
+
+<script>
+// Form validation and enhancements
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        // Form validation
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Show loading state
+                    const btn = form.querySelector('.form-btn-success');
+                    const btnText = btn.querySelector('.btn-text');
+                    const btnLoader = btn.querySelector('.btn-loader');
+                    
+                    if (btnText && btnLoader) {
+                        btnText.style.display = 'none';
+                        btnLoader.style.display = 'flex';
+                        btn.disabled = true;
+                    }
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        // Amount input formatting
+        const amountInput = document.querySelector('input[name="amount"]');
+        if (amountInput) {
+            amountInput.addEventListener('input', function(e) {
+                // Allow only numbers and decimal
+                this.value = this.value.replace(/[^0-9.]/g, '');
+                
+                // Prevent multiple decimals
+                const parts = this.value.split('.');
+                if (parts.length > 2) {
+                    this.value = parts[0] + '.' + parts.slice(1).join('');
+                }
+                
+                // Limit to 2 decimal places
+                if (parts[1] && parts[1].length > 2) {
+                    this.value = parts[0] + '.' + parts[1].substring(0, 2);
+                }
+            });
+
+            // Format on blur
+            amountInput.addEventListener('blur', function(e) {
+                if (this.value && !isNaN(this.value)) {
+                    this.value = parseFloat(this.value).toFixed(2);
+                }
+            });
+        }
+
+        // Set today's date as default if no date is set
+        const dateInput = document.querySelector('input[type="date"]');
+        if (dateInput && !dateInput.value) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+
+        // Close alert messages
+        document.querySelectorAll('.close').forEach(button => {
+            button.addEventListener('click', function() {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // Add focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

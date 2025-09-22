@@ -1,0 +1,1056 @@
+{% extends 'base.html' %}
+{% block title %}Monify - Smart Expense Management{% endblock %}
+
+{% block content %}
+<!-- Professional Landing Page -->
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="hero-shape hero-shape-1"></div>
+            <div class="hero-shape hero-shape-2"></div>
+            <div class="hero-shape hero-shape-3"></div>
+        </div>
+        <div class="container text-center">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-coins"></i>
+                    <span>Smart Finance Management</span>
+                </div>
+                <h1 class="hero-title">Take Control of Your <span class="text-gradient">Financial Future</span></h1>
+                <p class="hero-subtitle">Monify helps you track expenses, manage budgets, and gain insights into your spending habits with our intuitive and powerful platform.</p>
+                <div class="hero-actions">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-hero-primary btn-lg">
+                            <i class="fas fa-chart-line mr-2"></i>Go to Dashboard
+                        </a>
+                        <a href="{{ url_for('add_expense') }}" class="btn btn-hero-secondary btn-lg ml-3">
+                            <i class="fas fa-plus mr-2"></i>Add Expense
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-hero-primary btn-lg">
+                            <i class="fas fa-rocket mr-2"></i>Start Free Today
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-hero-secondary btn-lg ml-3">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-users">10K+</span>
+                        <span class="stat-label">Active Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-tracked">₹50M+</span>
+                        <span class="stat-label">Tracked</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-uptime">99.9%</span>
+                        <span class="stat-label">Uptime</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <span>Scroll to explore</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Why Choose Monify?</h2>
+                <p class="section-subtitle">Powerful features designed to make expense management effortless</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="feature-icon bg-primary">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h4>Smart Expense Tracking</h4>
+                    <p>Easily record and categorize your daily expenses with our intuitive interface. Add descriptions, amounts, and dates in seconds.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon bg-success">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h4>Powerful Analytics</h4>
+                    <p>Get detailed insights into your spending patterns with interactive charts, trends, and comprehensive reports.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon bg-info">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <h4>Budget Management</h4>
+                    <p>Set monthly budgets for different categories and track your progress with real-time alerts and notifications.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon bg-warning">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h4>Custom Categories</h4>
+                    <p>Create unlimited custom categories to organize your expenses exactly how you want them.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon bg-danger">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h4>Data Export</h4>
+                    <p>Export your financial data to CSV format for external analysis, tax preparation, or backup purposes.</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon bg-secondary">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Secure & Private</h4>
+                    <p>Your financial data is encrypted and secure. We never sell your information or share it with third parties.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="mission-content" data-aos="fade-right">
+                        <h2 class="mission-title">Our Mission</h2>
+                        <p class="mission-text">We believe that everyone deserves to have control over their finances. Monify was created to democratize financial management by providing powerful, easy-to-use tools that help individuals and families make informed financial decisions.</p>
+                        <div class="mission-features">
+                            <div class="mission-feature">
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                <span>100% Free to use</span>
+                            </div>
+                            <div class="mission-feature">
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                <span>No ads or hidden fees</span>
+                            </div>
+                            <div class="mission-feature">
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                <span>Privacy-focused design</span>
+                            </div>
+                            <div class="mission-feature">
+                                <i class="fas fa-check-circle text-success mr-2"></i>
+                                <span>Constantly improving</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mission-visual" data-aos="fade-left" data-aos-delay="200">
+                        <div class="visual-card">
+                            <div class="floating-graph">
+                                <div class="graph-bar" style="height: 40%"></div>
+                                <div class="graph-bar" style="height: 70%"></div>
+                                <div class="graph-bar" style="height: 60%"></div>
+                                <div class="graph-bar" style="height: 30%"></div>
+                                <div class="graph-bar" style="height: 80%"></div>
+                            </div>
+                            <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                            <h5>Financial Clarity</h5>
+                            <p>Transform complex financial data into clear, actionable insights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">How Monify Works</h2>
+                <p class="section-subtitle">Get started in just 3 simple steps</p>
+            </div>
+            <div class="steps-container">
+                <div class="step-item" data-aos="fade-up" data-aos-delay="0">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Sign Up Free</h4>
+                        <p>Create your account in less than 30 seconds. No credit card required.</p>
+                    </div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Track Expenses</h4>
+                        <p>Start logging your daily expenses with our easy-to-use interface.</p>
+                    </div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Gain Insights</h4>
+                        <p>View analytics, set budgets, and make informed financial decisions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="{{ url_for('register') if not current_user.is_authenticated else url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                    Get Started Now <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+   
+    <!-- About Company Section -->
+    <section class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto text-center">
+                    <h2 class="section-title">About Monify</h2>
+                    <p class="about-text">Founded in 2025, Monify was born from the frustration of using complex financial tools that made expense tracking more difficult than it needed to be. Our team of designers and developers set out to create a solution that puts user experience first while providing powerful financial insights.</p>
+                    
+                    <div class="company-stats">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="company-stat" data-aos="fade-up" data-aos-delay="0">
+                                    <h3>2025</h3>
+                                    <p>Founded</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="company-stat" data-aos="fade-up" data-aos-delay="100">
+                                    <h3>10K+</h3>
+                                    <p>Happy Users</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="company-stat" data-aos="fade-up" data-aos-delay="200">
+                                    <h3>₹5M+</h3>
+                                    <p>Money Tracked</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="company-stat" data-aos="fade-up" data-aos-delay="300">
+                                    <h3>99.9%</h3>
+                                    <p>Uptime</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Everything you need to know about Monify</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item" data-aos="fade-up">
+                    <button class="faq-question">
+                        Is Monify really free to use?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, Monify is completely free to use with no hidden fees or premium paywalls. We believe financial management tools should be accessible to everyone.</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-aos="fade-up">
+                    <button class="faq-question">
+                        How secure is my financial data?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We use bank-level encryption to protect your data. Your information is never sold to third parties, and we employ strict security measures to keep your financial data safe.</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-aos="fade-up">
+                    <button class="faq-question">
+                        Can I access Monify on mobile devices?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, Monify is fully responsive and works seamlessly on all devices including smartphones and tablets. We're also developing dedicated mobile apps for iOS and Android.</p>
+                    </div>
+                </div>
+                <div class="faq-item" data-aos="fade-up">
+                    <button class="faq-question">
+                        How do I export my data?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>You can export your expense data to CSV format with a single click from your dashboard. This feature is available to all users at no cost.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content text-center">
+                <h2 class="cta-title">Ready to Take Control?</h2>
+                <p class="cta-subtitle">Join thousands of users who are already managing their finances smarter with Monify</p>
+                <div class="cta-actions">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-cta-primary btn-lg">
+                            <i class="fas fa-chart-line mr-2"></i>Go to Your Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('register') }}" class="btn btn-cta-primary btn-lg">
+                            <i class="fas fa-user-plus mr-2"></i>Create Free Account
+                        </a>
+                    {% endif %}
+                    <div class="cta-note">
+                        <small class="text-muted">
+                            <i class="fas fa-lock mr-1"></i>
+                            Secure • Private • No Credit Card Required
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Add AOS CSS and JS for animations -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<style>
+/* Landing Page Styles */
+.landing-page {
+    margin-top: -100px;
+    padding-top: 100px;
+    overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 140px 0 100px 0;
+    color: white;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.hero-shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hero-shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -150px;
+}
+
+.hero-shape-2 {
+    width: 200px;
+    height: 200px;
+    bottom: 50px;
+    left: -100px;
+}
+
+.hero-shape-3 {
+    width: 150px;
+    height: 150px;
+    bottom: 150px;
+    right: 30%;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.hero-badge i {
+    color: #ffd700;
+    margin-right: 8px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 25px;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.hero-actions {
+    margin-bottom: 60px;
+}
+
+.btn-hero-primary {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border: none;
+    color: white;
+    padding: 15px 35px;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+    color: white;
+}
+
+.btn-hero-secondary {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 13px 35px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-hero-secondary:hover {
+    background: white;
+    color: #667eea;
+    transform: translateY(-2px);
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffd700;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.hero-scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    animation: bounce 2s infinite;
+}
+
+.hero-scroll-indicator span {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) translateX(-50%);
+    }
+    40% {
+        transform: translateY(-10px) translateX(-50%);
+    }
+    60% {
+        transform: translateY(-5px) translateX(-50%);
+    }
+}
+
+/* Features Section */
+.features-section {
+    padding: 100px 0;
+    background: white;
+}
+
+.section-header {
+    margin-bottom: 80px;
+}
+
+.section-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    max-width: 600px;
+    margin: 20px auto 0;
+    line-height: 1.6;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 40px 30px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px auto;
+    font-size: 2rem;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+.feature-card h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Mission Section */
+.mission-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+}
+
+.mission-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.mission-text {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+.mission-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mission-feature {
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.mission-visual {
+    text-align: center;
+    position: relative;
+}
+
+.visual-card {
+    background: white;
+    padding: 50px 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.floating-graph {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 60px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 10px;
+    z-index: 2;
+}
+
+.graph-bar {
+    width: 12px;
+    background: linear-gradient(to top, #667eea, #764ba2);
+    border-radius: 3px 3px 0 0;
+}
+
+.visual-card h5 {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.visual-card p {
+    color: #666;
+    margin: 0;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    padding: 100px 0;
+    background: white;
+}
+
+.steps-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 60px;
+    position: relative;
+}
+
+.step-item {
+    text-align: center;
+    max-width: 250px;
+    position: relative;
+    z-index: 1;
+}
+
+.step-number {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 auto 25px auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.step-line {
+    flex: 1;
+    height: 3px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    margin-top: 40px;
+    position: relative;
+}
+
+.step-line::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 11px;
+    height: 11px;
+    background: #764ba2;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(118, 75, 162, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(118, 75, 162, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(118, 75, 162, 0);
+    }
+}
+
+.step-content h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.step-content p {
+    color: #666;
+    line-height: 1.6;
+}
+
+
+/* About Section */
+.about-section {
+    padding: 100px 0;
+    background: white;
+}
+
+.about-text {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 50px;
+}
+
+.company-stats {
+    margin-top: 50px;
+}
+
+.company-stat {
+    text-align: center;
+    padding: 20px;
+}
+
+.company-stat h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.company-stat p {
+    color: #666;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* FAQ Section */
+.faq-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 60px auto 0;
+}
+
+.faq-item {
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.faq-question {
+    width: 100%;
+    padding: 20px;
+    text-align: left;
+    background: white;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+    background: #f8f9ff;
+}
+
+.faq-question i {
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    padding: 0 20px 20px;
+    max-height: 200px;
+}
+
+.faq-answer p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="3" fill="rgba(255,255,255,0.05)"/><circle cx="40" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cta-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.cta-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-cta-primary {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border: none;
+    color: white;
+    padding: 18px 40px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+    color: white;
+}
+
+.cta-note {
+    margin-top: 20px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .steps-container {
+        flex-direction: column;
+        gap: 40px;
+        align-items: center;
+    }
+    
+    .step-line {
+        width: 3px;
+        height: 40px;
+        margin: 0 auto;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+    }
+    
+    .testimonials-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+// Initialize AOS animations
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true,
+        offset: 100
+    });
+    
+    // FAQ toggle functionality
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+            item.classList.toggle('active');
+        });
+    });
+    
+    // Animate stats counter
+    const animateCounter = (element, start, end, duration) => {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
+            element.textContent = end >= 1000 ? (value >= 1000 ? (value/1000).toFixed(0) + 'K+' : value) : value + '%';
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    };
+    
+    // Check if element is in viewport
+    const isInViewport = (el) => {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    };
+    
+    // Animate stats when they come into view
+    const statsAnimated = {
+        users: false,
+        tracked: false,
+        uptime: false
+    };
+    
+    const checkStatsAnimation = () => {
+        if (!statsAnimated.users && isInViewport(document.getElementById('stat-users'))) {
+            animateCounter(document.getElementById('stat-users'), 0, 10, 2000);
+            statsAnimated.users = true;
+        }
+        if (!statsAnimated.tracked && isInViewport(document.getElementById('stat-tracked'))) {
+            animateCounter(document.getElementById('stat-tracked'), 0, 50, 2000);
+            statsAnimated.tracked = true;
+        }
+        if (!statsAnimated.uptime && isInViewport(document.getElementById('stat-uptime'))) {
+            animateCounter(document.getElementById('stat-uptime'), 0, 99.9, 2000);
+            statsAnimated.uptime = true;
+        }
+    };
+    
+    window.addEventListener('scroll', checkStatsAnimation);
+    checkStatsAnimation(); // Check on load
+});
+</script>
+{% endblock %}

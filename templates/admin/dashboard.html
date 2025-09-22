@@ -1,0 +1,130 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Dashboard - Admin Panel{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h3 class="text-primary">{{ total_users }}</h3>
+                    <p class="text-muted mb-0">Total Users</p>
+                </div>
+                <i class="fas fa-users fa-2x text-primary"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h3 class="text-success">{{ total_expenses }}</h3>
+                    <p class="text-muted mb-0">Total Expenses</p>
+                </div>
+                <i class="fas fa-receipt fa-2x text-success"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h3 class="text-info">{{ total_categories }}</h3>
+                    <p class="text-muted mb-0">Categories</p>
+                </div>
+                <i class="fas fa-tags fa-2x text-info"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h3 class="text-warning">₹{{ "%.0f"|format(monthly_expenses) }}</h3>
+                    <p class="text-muted mb-0">This Month</p>
+                </div>
+                <i class="fas fa-chart-line fa-2x text-warning"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Users -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user-plus mr-2"></i>Recent Users</h5>
+            </div>
+            <div class="card-body">
+                {% for user in recent_users %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <strong>{{ user.username }}</strong><br>
+                        <small class="text-muted">{{ user.email }}</small>
+                    </div>
+                    <small class="text-muted">{{ user.created_at.strftime('%b %d, %Y') }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Categories -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar mr-2"></i>Top Categories</h5>
+            </div>
+            <div class="card-body">
+                {% for category, total in top_categories %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>{{ category }}</span>
+                    <span class="font-weight-bold text-primary">₹{{ "%.2f"|format(total) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history mr-2"></i>Recent Expenses</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in recent_expenses %}
+                            <tr>
+                                <td>{{ expense.date.strftime('%b %d, %Y') }}</td>
+                                <td>{{ expense.user.username }}</td>
+                                <td>{{ expense.description }}</td>
+                                <td class="text-success font-weight-bold">₹{{ "%.2f"|format(expense.amount) }}</td>
+                                <td><span class="badge badge-secondary">{{ expense.category.name }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

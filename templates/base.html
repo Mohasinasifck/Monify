@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+    <!-- Favicon using coin icon -->
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    
+    <!-- Page Title -->
+    <title>{% block title %}Monify - Smart Expense Management{% endblock %}</title>
+    
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding-top: 100px;
+        }
+
+        /* Rounded navbar */
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            z-index: 1030;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            padding: 10px 30px;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Dropdown on hover for navbar brand */
+        .navbar-brand-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .navbar-brand-dropdown .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 280px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .navbar-brand-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Dropdown items styling */
+        .dropdown-item-custom {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background-color 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-item-custom:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+            color: #333;
+            border-left-color: #667eea;
+        }
+
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.05);
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+
+        .dropdown-item-custom:hover .icon-container {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .dropdown-item-custom .item-content {
+            flex: 1;
+        }
+
+        .dropdown-item-custom .item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .dropdown-item-custom .item-subtitle {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .dropdown-item-custom .item-badge {
+            background: #ff4757;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .dropdown-footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .dropdown-footer .btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-footer .btn:hover {
+            background: #555;
+            color: white;
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.2s ease;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-item.active .nav-link {
+            color: #fff !important;
+        }
+
+        .btn-start {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Hero section styling */
+        .hero-section {
+            text-align: center;
+            padding: 80px 0 60px 0;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Stats section */
+        .stats-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 60px 0;
+            margin: 60px 0;
+        }
+
+        .stats-card {
+            text-align: center;
+            color: white;
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stats-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* WHITE OVERVIEW CONTAINER */
+        .overview-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto;
+            max-width: 1200px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .overview-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Overview cards grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .overview-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .overview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .card-icon {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Enhanced Footer with Geometric Pattern */
+        .footer-section {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
+            color: white;
+            padding: 60px 0 0 0;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Geometric pattern background */
+        .footer-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background-image: 
+                linear-gradient(30deg, transparent 50%, rgba(255,255,255,0.05) 50%),
+                linear-gradient(150deg, transparent 50%, rgba(255,255,255,0.05) 50%),
+                linear-gradient(60deg, transparent 50%, rgba(255,255,255,0.03) 50%),
+                linear-gradient(120deg, transparent 50%, rgba(255,255,255,0.03) 50%);
+            background-size: 200px 200px, 200px 200px, 100px 100px, 100px 100px;
+            background-position: 0 0, 100px 100px, 50px 50px, 150px 150px;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+        }
+
+        .footer-column h5 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .footer-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            transform: translateX(5px);
+        }
+
+        .footer-link i {
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover i {
+            color: #667eea;
+        }
+
+        /* Social icons */
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .social-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        /* Social Link Tooltips */
+        .social-link {
+            position: relative;
+        }
+
+        .social-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .social-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .social-link:hover .social-tooltip {
+            opacity: 1;
+            visibility: visible;
+            bottom: calc(100% + 10px);
+        }
+
+        /* Back to top button */
+        .btn-back-to-top {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-back-to-top:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Copyright bar */
+        .footer-copyright-bar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 15px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-copyright-bar p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .footer-copyright-bar strong {
+            color: #fff;
+        }
+
+        /* Enhanced Modal Styling */
+        .modal {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            border-radius: 20px 20px 0 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px 30px 20px 30px;
+            position: relative;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #ff6b6b);
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-body {
+            padding: 30px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 20px 30px;
+            background: rgba(248, 249, 250, 0.8);
+        }
+
+        .close {
+            font-size: 2rem;
+            font-weight: 300;
+            opacity: 0.8;
+            text-shadow: none;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Help Section Styling */
+        .help-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+
+        .help-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-section.getting-started {
+            border-left-color: #667eea;
+        }
+
+        .help-section.advanced {
+            border-left-color: #28a745;
+        }
+
+        .help-section h6 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .help-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .help-link:hover {
+            color: #764ba2;
+            text-decoration: none;
+            padding-left: 10px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+        }
+
+        .help-link:last-child {
+            border-bottom: none;
+        }
+
+        /* Quick Tip Styling */
+        .quick-tip {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffc107;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .quick-tip h6 {
+            color: #856404;
+            font-weight: 700;
+        }
+
+        .quick-tip p {
+            color: #856404;
+            margin-bottom: 0;
+        }
+
+        /* Step-by-step instruction styling */
+        .instruction-step {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .instruction-step:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Contact form enhancements */
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background: rgba(102, 126, 234, 0.02);
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #e8f4ff 0%, #f0f8ff 100%);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        /* Additional body blur effect */
+        .modal-open-blur .main-content {
+            filter: blur(3px);
+            transition: filter 0.3s ease;
+        }
+
+        .modal-open .main-content {
+            filter: none;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                top: 10px;
+                width: 95%;
+                padding: 8px 20px;
+            }
+            
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .overview-container {
+                margin: 20px;
+                padding: 25px;
+            }
+            
+            .overview-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
+
+            .footer-content {
+                padding: 0 15px 30px 15px;
+            }
+            
+            .social-icons {
+                justify-content: flex-start;
+                margin-bottom: 20px;
+            }
+            
+            .btn-back-to-top {
+                width: 100%;
+                margin-top: 20px;
+            }
+            
+            .footer-column {
+                margin-bottom: 30px;
+            }
+            
+            .footer-copyright-bar {
+                padding: 20px 15px;
+            }
+
+            .social-tooltip {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <!-- Dropdown Brand with Coin Icon -->
+            {% if current_user.is_authenticated %}
+            <div class="navbar-brand-dropdown">
+               <a class="navbar-brand" href="{{ url_for('home') }}">
+
+
+                    <i class="fas fa-coins" style="margin-right: 8px; font-size: 1.5rem; color: #ffd700;"></i>
+                    Monify
+                </a>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('home') }}" class="dropdown-item-custom">
+                        <div class="icon-container">
+                            <i class="fas fa-home fa-lg" style="color: #667eea;"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">Dashboard</div>
+                            <div class="item-subtitle">View your expense overview</div>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('add_expense') }}" class="dropdown-item-custom">
+                        <div class="icon-container">
+                            <i class="fas fa-plus-circle fa-lg" style="color: #28a745;"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">Quick Add</div>
+                            <div class="item-subtitle">Add new expense</div>
+                        </div>
+                        <span class="item-badge">NEW</span>
+                    </a>
+
+                    <a href="{{ url_for('expenses') }}" class="dropdown-item-custom">
+                        <div class="icon-container">
+                            <i class="fas fa-list fa-lg" style="color: #dc3545;"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">All Expenses</div>
+                            <div class="item-subtitle">View and manage expenses</div>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('summary') }}" class="dropdown-item-custom">
+                        <div class="icon-container">
+                            <i class="fas fa-chart-pie fa-lg" style="color: #17a2b8;"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">Analytics</div>
+                            <div class="item-subtitle">View spending patterns</div>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('add_category') }}" class="dropdown-item-custom">
+                        <div class="icon-container">
+                            <i class="fas fa-tags fa-lg" style="color: #6c757d;"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">Categories</div>
+                            <div class="item-subtitle">Manage expense categories</div>
+                        </div>
+                    </a>
+                    
+                    <div class="dropdown-footer">
+                        <a href="{{ url_for('export_csv') }}" class="btn">
+                            <i class="fas fa-download mr-2"></i>Export All Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="fas fa-coins" style="margin-right: 8px; font-size: 1.5rem; color: #ffd700;"></i>
+                Monify
+            </a>
+            {% endif %}
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <!-- In the navbar, change Home link to Dashboard when authenticated -->
+                    <li class="nav-item {% if request.endpoint == 'home' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+<!-- ... rest of nav items -->
+                    <li class="nav-item {% if request.endpoint == 'expenses' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('expenses') }}">Expenses</a>
+                    </li>
+                    <li class="nav-item {% if request.endpoint == 'summary' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('summary') }}">Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('export_csv') }}">Export</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <span class="navbar-text text-white mr-3">Hello, {{ current_user.username }}!</span>
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    {% else %}
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="btn btn-start ml-2" href="{{ url_for('register') }}">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="container">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Enhanced Footer with Geometric Background Pattern -->
+    <footer class="footer-section">
+        <!-- Geometric pattern background -->
+        <div class="footer-pattern"></div>
+        
+        <div class="footer-content">
+            <div class="row">
+                <!-- Left side - Monify branding with social links -->
+                <div class="col-md-3">
+                    <div class="footer-column">
+                        <h5><i class="fas fa-coins text-warning mr-2"></i>Monify</h5>
+                        <div class="social-icons mt-4">
+                            <a href="https://linkedin.com" target="_blank" class="social-icon">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://twitter.com" target="_blank" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://facebook.com" target="_blank" class="social-icon">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="https://instagram.com" target="_blank" class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                        
+                        <!-- Back to Top Button -->
+                        <div class="mt-4">
+                            <button class="btn-back-to-top" onclick="scrollToTop()">
+                                <i class="fas fa-chevron-up mr-2"></i>BACK TO TOP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Middle columns - Support and Features -->
+                <div class="col-md-3">
+                    <div class="footer-column">
+                        <h5>Site Map</h5>
+                        <a href="/" class="footer-link">Homepage</a>
+                        <a href="{{ url_for('expenses') if current_user.is_authenticated else url_for('register') }}" class="footer-link">Expenses</a>
+                        <a href="{{ url_for('add_category') if current_user.is_authenticated else url_for('register') }}" class="footer-link">Categories</a>
+                        <a href="#" data-toggle="modal" data-target="#contactModal" class="footer-link">Contact Us</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="footer-column">
+                        <h5>Features</h5>
+                        <a href="{{ url_for('add_expense') if current_user.is_authenticated else url_for('register') }}" class="footer-link">Add Expenses</a>
+                        <a href="{{ url_for('export_csv') if current_user.is_authenticated else url_for('register') }}" class="footer-link">Export Data</a>
+                        <a href="{{ url_for('summary') if current_user.is_authenticated else url_for('register') }}" class="footer-link">Analytics & Reports</a>
+                        <a href="#" data-toggle="modal" data-target="#helpModal" class="footer-link">Help Center</a>
+                    </div>
+                </div>
+                
+                <!-- Right side - Legal -->
+                <div class="col-md-3">
+                    <div class="footer-column">
+                        <h5>Legal</h5>
+                        <a href="#" data-toggle="modal" data-target="#privacyModal" class="footer-link">Privacy Policy</a>
+                        <a href="#" data-toggle="modal" data-target="#termsModal" class="footer-link">Terms & Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copyright bar with gradient -->
+        <div class="footer-copyright-bar">
+            <div class="container">
+                <div class="text-center">
+                    <p class="mb-0">Copyright © {{ current_year or "2025" }}, <strong>Monify</strong>, All Rights Reserved. Made with <i class="fas fa-heart text-danger"></i> for better financial management.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Enhanced Help Center Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-question-circle mr-3"></i>Help Center
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Getting Started Section -->
+                        <div class="col-md-6">
+                            <div class="help-section getting-started">
+                                <h6><i class="fas fa-rocket mr-3 text-primary"></i>Getting Started</h6>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('create-account')">
+                                    <i class="fas fa-user-plus mr-2"></i>How to create an account
+                                </a>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('first-expense')">
+                                    <i class="fas fa-plus-circle mr-2"></i>Adding your first expense
+                                </a>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('create-categories')">
+                                    <i class="fas fa-tags mr-2"></i>Creating categories
+                                </a>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('understanding-analytics')">
+                                    <i class="fas fa-chart-line mr-2"></i>Understanding analytics
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Advanced Features Section -->
+                        <div class="col-md-6">
+                            <div class="help-section advanced">
+                                <h6><i class="fas fa-cogs mr-3 text-success"></i>Advanced Features</h6>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('export-data')">
+                                    <i class="fas fa-download mr-2"></i>Exporting data
+                                </a>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('budget-management')">
+                                    <i class="fas fa-wallet mr-2"></i>Budget management
+                                </a>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('custom-reports')">
+                                    <i class="fas fa-chart-bar mr-2"></i>Custom reports
+                                </a>
+                                
+                                <a href="#" class="help-link" onclick="showInstructions('data-backup')">
+                                    <i class="fas fa-shield-alt mr-2"></i>Data backup
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instructions Display Area -->
+                    <div id="instruction-content" style="display: none; margin-top: 30px;">
+                        <div id="instruction-details"></div>
+                    </div>
+                    
+                    <!-- Quick Tip -->
+                    <div class="quick-tip">
+                        <h6><i class="fas fa-lightbulb mr-2"></i>Pro Tip</h6>
+                        <p>Use categories to better organize your expenses and get more detailed analytics! You can create unlimited categories for better expense tracking.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideInstructions()">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Topics
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        <i class="fas fa-check mr-2"></i>Got it!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Us Modal -->
+    <div class="modal fade" id="contactModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-envelope mr-2"></i>Contact Us</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="contactName">Name</label>
+                            <input type="text" class="form-control" id="contactName" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email</label>
+                            <input type="email" class="form-control" id="contactEmail" placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactSubject">Subject</label>
+                            <select class="form-control" id="contactSubject">
+                                <option>General Inquiry</option>
+                                <option>Technical Support</option>
+                                <option>Feature Request</option>
+                                <option>Bug Report</option>
+                                <option>Account Issue</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactMessage">Message</label>
+                            <textarea class="form-control" id="contactMessage" rows="4" placeholder="How can we help you?"></textarea>
+                        </div>
+                    </form>
+                    <div class="contact-info mt-4 p-3 rounded">
+                        <h6><i class="fas fa-info-circle mr-2"></i>Other Ways to Reach Us</h6>
+                        <p><i class="fas fa-envelope mr-2"></i>support@monify.com</p>
+                        <p><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</p>
+                        <p class="mb-0"><i class="fas fa-clock mr-2"></i>Response time: Within 24 hours</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="fas fa-shield-alt mr-2"></i>Privacy Policy</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="privacy-content">
+                        <h6>Data Collection</h6>
+                        <p>We collect only the information necessary to provide you with the best expense tracking experience:</p>
+                        <ul>
+                            <li>Account information (username, email)</li>
+                            <li>Expense data you input</li>
+                            <li>Usage analytics (anonymous)</li>
+                        </ul>
+                        
+                        <h6 class="mt-4">Data Security</h6>
+                        <p>Your data is protected using industry-standard encryption:</p>
+                        <ul>
+                            <li>SSL/TLS encryption for all communications</li>
+                            <li>Encrypted database storage</li>
+                            <li>Regular security audits</li>
+                        </ul>
+                        
+                        <h6 class="mt-4">Your Rights</h6>
+                        <ul>
+                            <li>Access your personal data</li>
+                            <li>Request data deletion</li>
+                            <li>Export your data</li>
+                            <li>Opt-out of analytics</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>We never sell your data.</strong> Your financial information remains private and secure.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="fas fa-file-contract mr-2"></i>Terms of Service</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="terms-content">
+                        <h6>Service Usage</h6>
+                        <p>By using Monify, you agree to:</p>
+                        <ul>
+                            <li>Provide accurate account information</li>
+                            <li>Use the service responsibly</li>
+                            <li>Not share your account credentials</li>
+                            <li>Comply with applicable laws</li>
+                        </ul>
+                        
+                        <h6 class="mt-4">User Responsibilities</h6>
+                        <ul>
+                            <li>Keep your account secure</li>
+                            <li>Report any security issues</li>
+                            <li>Backup your important data</li>
+                            <li>Use appropriate expense descriptions</li>
+                        </ul>
+                        
+                        <h6 class="mt-4">Service Availability</h6>
+                        <p>We strive to provide 99.9% uptime, but cannot guarantee uninterrupted service due to:</p>
+                        <ul>
+                            <li>Scheduled maintenance</li>
+                            <li>Technical issues</li>
+                            <li>Third-party service dependencies</li>
+                        </ul>
+                        
+                        <div class="alert alert-warning mt-4">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <strong>Free Service:</strong> Monify is provided free of charge. We reserve the right to modify features with notice.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Agreed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    // Back to top functionality
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // Help Center Instructions
+    function showInstructions(topic) {
+        const instructions = {
+            'create-account': {
+                title: 'How to Create an Account',
+                icon: 'fas fa-user-plus',
+                steps: [
+                    'Click on the "Sign Up" button in the top navigation',
+                    'Enter your desired username (minimum 4 characters)',
+                    'Provide a valid email address',
+                    'Create a strong password (minimum 6 characters)',
+                    'Click "Register" to create your account',
+                    'Check your email for any verification (if required)',
+                    'Login with your new credentials'
+                ]
+            },
+            'first-expense': {
+                title: 'Adding Your First Expense',
+                icon: 'fas fa-plus-circle',
+                steps: [
+                    'After logging in, click "Add New Expense" button',
+                    'Enter a description (e.g., "Coffee", "Lunch", "Uber ride")',
+                    'Input the amount spent (numbers only)',
+                    'Select or adjust the date if needed',
+                    'Choose an appropriate category from the dropdown',
+                    'Click "Save Expense" to record it',
+                    'View your expense in the "Expenses" section'
+                ]
+            },
+            'create-categories': {
+                title: 'Creating Categories',
+                icon: 'fas fa-tags',
+                steps: [
+                    'Navigate to "Add Category" from the menu',
+                    'Enter a category name (e.g., "Groceries", "Entertainment")',
+                    'Keep category names short and descriptive',
+                    'Click "Add Category" to save',
+                    'Your new category will appear in expense forms',
+                    'You can create unlimited categories',
+                    'Default categories are provided for new users'
+                ]
+            },
+            'understanding-analytics': {
+                title: 'Understanding Analytics',
+                icon: 'fas fa-chart-line',
+                steps: [
+                    'Click on "Analytics" in the main navigation',
+                    'View your total expenses and expense count',
+                    'Check spending by category with percentages',
+                    'Progress bars show relative spending amounts',
+                    'Use this data to identify spending patterns',
+                    'Monitor your financial habits over time',
+                    'Export data for external analysis if needed'
+                ]
+            },
+            'export-data': {
+                title: 'Exporting Your Data',
+                icon: 'fas fa-download',
+                steps: [
+                    'Click on "Export" in the navigation menu',
+                    'Your data will be downloaded as a CSV file',
+                    'File includes: Date, Description, Amount, Category',
+                    'Open the file in Excel, Google Sheets, or any spreadsheet app',
+                    'Use exported data for backup or external analysis',
+                    'Export is updated in real-time with your latest expenses',
+                    'File name includes current date for easy organization'
+                ]
+            },
+            'budget-management': {
+                title: 'Budget Management',
+                icon: 'fas fa-wallet',
+                steps: [
+                    'Review your spending patterns in Analytics',
+                    'Set mental or written budgets for each category',
+                    'Monitor category totals regularly',
+                    'Use percentage indicators to track category limits',
+                    'Export data monthly to track budget adherence',
+                    'Adjust spending habits based on analytics',
+                    'Consider creating separate categories for better tracking'
+                ]
+            },
+            'custom-reports': {
+                title: 'Custom Reports',
+                icon: 'fas fa-chart-bar',
+                steps: [
+                    'Use the Analytics page for built-in reports',
+                    'Export your data to create custom reports',
+                    'Filter expenses by date range (manually in exported data)',
+                    'Create charts and graphs using spreadsheet software',
+                    'Track spending trends over multiple months',
+                    'Compare category spending month-to-month',
+                    'Share reports with financial advisors if needed'
+                ]
+            },
+            'data-backup': {
+                title: 'Data Backup',
+                icon: 'fas fa-shield-alt',
+                steps: [
+                    'Regularly export your data using the "Export" feature',
+                    'Save exported CSV files to cloud storage (Google Drive, Dropbox)',
+                    'Keep multiple backup copies in different locations',
+                    'Export data monthly or after significant updates',
+                    'Your account data is securely stored on our servers',
+                    'Exported files serve as your personal backup',
+                    'Contact support if you need assistance with data recovery'
+                ]
+            }
+        };
+        
+        const instruction = instructions[topic];
+        if (instruction) {
+            let stepsHtml = '';
+            instruction.steps.forEach((step, index) => {
+                stepsHtml += `
+                    <div class="instruction-step">
+                        <div class="d-flex align-items-center">
+                            <span class="step-number">${index + 1}</span>
+                            <span>${step}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('instruction-details').innerHTML = `
+                <div class="text-center mb-4">
+                    <i class="${instruction.icon} fa-3x text-primary mb-3"></i>
+                    <h4>${instruction.title}</h4>
+                    <p class="text-muted">Follow these step-by-step instructions</p>
+                </div>
+                ${stepsHtml}
+            `;
+            
+            document.getElementById('instruction-content').style.display = 'block';
+            
+            // Smooth scroll to instructions
+            document.getElementById('instruction-content').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+
+    function hideInstructions() {
+        document.getElementById('instruction-content').style.display = 'none';
+    }
+
+    // Enhanced modal animations
+    $(document).ready(function() {
+        $('.modal').on('show.bs.modal', function() {
+            $('body').addClass('modal-open-blur');
+        });
+        
+        $('.modal').on('hidden.bs.modal', function() {
+            $('body').removeClass('modal-open-blur');
+            hideInstructions();
+        });
+    });
+    </script>
+</body>
+</html>

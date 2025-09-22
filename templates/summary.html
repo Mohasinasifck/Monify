@@ -1,0 +1,1166 @@
+{% extends 'base.html' %}
+{% block title %}Analytics - Monify{% endblock %}
+
+{% block content %}
+<div class="analytics-container">
+    <div class="analytics-blur-bg"></div>
+    <div class="container">
+        <!-- Enhanced Analytics Header -->
+        <div class="analytics-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h1 class="analytics-title">Analytics Dashboard</h1>
+                <p class="analytics-subtitle">Detailed insights into your spending patterns and financial habits</p>
+            </div>
+        </div>
+
+        <!-- Enhanced Quick Stats -->
+        <div class="stats-grid" data-aos="fade-up">
+            <div class="stat-card total-spending">
+                <div class="stat-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">₹{{ "%.2f"|format(total_amount) }}</h3>
+                    <p class="stat-label">Total Spent</p>
+                </div>
+            </div>
+            
+            <div class="stat-card total-expenses">
+                <div class="stat-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ expense_count }}</h3>
+                    <p class="stat-label">Total Expenses</p>
+                    <div class="stat-trend neutral">
+                        <i class="fas fa-equals"></i>
+                        <span>{{ expense_count }} transactions</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card avg-expense">
+                <div class="stat-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">
+                        {% if expense_count > 0 %}
+                        ₹{{ "%.2f"|format(total_amount / expense_count) }}
+                        {% else %}
+                        ₹0
+                        {% endif %}
+                    </h3>
+                    <p class="stat-label">Average per Expense</p>
+                </div>
+            </div>
+            
+            <div class="stat-card active-categories">
+                <div class="stat-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ category_totals|length }}</h3>
+                    <p class="stat-label">Active Categories</p>
+                    <div class="stat-trend neutral">
+                        <i class="fas fa-tag"></i>
+                        <span>Well organized</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Charts Section -->
+        <div class="charts-section">
+            <div class="row">
+                <!-- Category Breakdown Chart -->
+                <div class="col-lg-8 mb-4" data-aos="fade-right">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4 class="chart-title">
+                                <i class="fas fa-chart-pie mr-2"></i>Spending by Category
+                            </h4>
+                            <div class="chart-actions">
+                                <button class="chart-toggle active" data-chart="pie" title="Pie Chart">
+                                    <i class="fas fa-chart-pie"></i>
+                                </button>
+                                <button class="chart-toggle" data-chart="bar" title="Bar Chart">
+                                    <i class="fas fa-chart-bar"></i>
+                                </button>
+                                
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            {% if category_totals %}
+                                <canvas id="categoryChart"></canvas>
+                                <div class="chart-loading" id="categoryLoading" style="display: none;">
+                                    <div class="loading-spinner"></div>
+                                    <p>Loading chart data...</p>
+                                </div>
+                            {% else %}
+                                <div class="empty-chart">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <h4>No Data Available</h4>
+                                    <p>Add some expenses to see your spending breakdown</p>
+                                    <a href="{{ url_for('add_expense') }}" class="btn btn-primary">
+                                        <i class="fas fa-plus mr-2"></i>Add First Expense
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Trend Chart -->
+                <div class="col-lg-4 mb-4" data-aos="fade-left">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h4 class="chart-title">
+                                <i class="fas fa-chart-line mr-2"></i>Monthly Trend
+                            </h4>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Category Details -->
+        <div class="category-details-section" data-aos="fade-up">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-list mr-2"></i>Category Breakdown
+                </h3>
+                <div class="section-actions">
+                    <button class="btn btn-outline-primary btn-sm" onclick="exportTableData()">
+                        <i class="fas fa-download mr-2"></i>Export Data
+                    </button>
+                </div>
+            </div>
+            
+            <div class="details-card">
+                {% if category_totals %}
+                <div class="table-responsive">
+                    <table class="enhanced-table" id="categoryTable">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Count</th>
+                                <th>Amount</th>
+                                <th>Percentage</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set chart_colors = ['#667eea', '#764ba2', '#28a745', '#ffa726', '#e74c3c', '#17a2b8', '#6c757d', '#fd7e14', '#20c997', '#6f42c1'] %}
+                            {% for category_name, amount in category_totals.items() %}
+                            <tr class="table-row">
+                                <td>
+                                    <div class="category-info">
+                                        <div class="category-color" style="background-color: {{ chart_colors[loop.index0 % chart_colors|length] }};"></div>
+                                        <strong>{{ category_name }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% set expense_count_cat = summary_data.get('category_counts', {}).get(category_name, 0) %}
+                                    <span class="count-badge">{{ expense_count_cat }}</span>
+                                </td>
+                                <td>
+                                    <span class="amount-display">₹{{ "%.2f"|format(amount) }}</span>
+                                </td>
+                                <td>
+                                    <span class="percentage-display">{{ "%.1f"|format((amount / total_amount * 100) if total_amount > 0 else 0) }}%</span>
+                                </td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" 
+                                                 style="width: {{ (amount / total_amount * 100) if total_amount > 0 else 0 }}%; 
+                                                        background-color: {{ chart_colors[loop.index0 % chart_colors|length] }};">
+                                            </div>
+                                        </div>
+                                        <span class="progress-label">{{ "%.0f"|format(amount / total_amount * 100 if total_amount > 0 else 0) }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h4>No Analytics Data</h4>
+                    <p>Start adding expenses to see detailed insights</p>
+                    <a href="{{ url_for('add_expense') }}" class="btn btn-primary">
+                        <i class="fas fa-plus mr-2"></i>Add Your First Expense
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Enhanced Insights Section -->
+        {% if category_totals %}
+        <div class="insights-section" data-aos="fade-up" data-aos-delay="200">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <h4 class="insight-title">
+                                <i class="fas fa-lightbulb mr-2"></i>Smart Insights
+                            </h4>
+                        </div>
+                        <div class="insight-body">
+                            {% set highest_category = category_totals.items() | list | sort(attribute=1, reverse=true) | first %}
+                            {% set lowest_category = category_totals.items() | list | sort(attribute=1) | first %}
+                            
+                            <div class="insight-item">
+                                <div class="insight-icon bg-warning">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <h6>Top Spending Category</h6>
+                                    <p><strong>{{ highest_category[0] }}</strong> accounts for ₹{{ "%.2f"|format(highest_category[1]) }} of your total spending</p>
+                                </div>
+                            </div>
+                            
+                            <div class="insight-item">
+                                <div class="insight-icon bg-info">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <h6>Spending Distribution</h6>
+                                    <p>Your top category represents <strong>{{ "%.1f"|format((highest_category[1] / total_amount * 100) if total_amount > 0 else 0) }}%</strong> of total expenses</p>
+                                </div>
+                            </div>
+                            
+                            <div class="insight-item">
+                                <div class="insight-icon bg-success">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="insight-content">
+                                    <h6>Budget Suggestion</h6>
+                                    <p>Consider a monthly budget of <strong>₹{{ "%.0f"|format((total_amount / expense_count) * 30 if expense_count > 0 else 0) }}</strong> based on patterns</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="recommendation-card">
+                        <div class="recommendation-header">
+                            <h4 class="recommendation-title">
+                                <i class="fas fa-magic mr-2"></i>Recommendations
+                            </h4>
+                        </div>
+                        <div class="recommendation-body">
+                            <div class="recommendation-item">
+                                <div class="recommendation-icon bg-primary">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h6>Category Organization</h6>
+                                    <p>You have <strong>{{ category_totals|length }}</strong> active categories. {% if category_totals|length > 8 %}Consider consolidating similar expenses{% else %}Well organized!{% endif %}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation-item">
+                                <div class="recommendation-icon bg-success">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h6>Tracking Frequency</h6>
+                                    <p>{% if expense_count > 30 %}Great job tracking regularly!{% else %}Try adding expenses daily for better insights{% endif %}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="recommendation-item">
+                                <div class="recommendation-icon bg-warning">
+                                    <i class="fas fa-target"></i>
+                                </div>
+                                <div class="recommendation-content">
+                                    <h6>Financial Goal</h6>
+                                    <p>Set spending limits for your top categories to better control expenses</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Chart colors matching design
+const chartColors = [
+    '#667eea', '#764ba2', '#28a745', '#ffa726', '#e74c3c', 
+    '#17a2b8', '#6c757d', '#fd7e14', '#20c997', '#6f42c1'
+];
+
+// Category data
+const categoryData = {{ category_totals | tojson }};
+const categoryLabels = Object.keys(categoryData);
+const categoryValues = Object.values(categoryData);
+
+let categoryChart = null;
+let currentChartType = 'doughnut';
+
+// Initialize charts
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    initializeAnimations();
+});
+
+function initializeCharts() {
+    // Category Chart
+    if (categoryLabels.length > 0) {
+        createCategoryChart('doughnut');
+    }
+    
+    // Monthly Chart
+    createMonthlyChart();
+}
+
+function createCategoryChart(type = 'doughnut') {
+    const categoryCtx = document.getElementById('categoryChart');
+    if (!categoryCtx) return;
+    
+    if (categoryChart) {
+        categoryChart.destroy();
+    }
+    
+    const config = {
+        type: type,
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                data: categoryValues,
+                backgroundColor: chartColors,
+                borderWidth: 0,
+                borderRadius: type === 'bar' ? 8 : 0,
+                hoverBorderWidth: 3,
+                hoverBorderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: type === 'doughnut' ? '60%' : 0,
+            plugins: {
+                legend: {
+                    position: type === 'bar' ? 'top' : 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#667eea',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.parsed;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `₹${value.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateScale: true,
+                duration: 1500
+            }
+        }
+    };
+    
+    if (type === 'bar') {
+        config.options.scales = {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + value.toLocaleString();
+                    }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        };
+    }
+    
+    categoryChart = new Chart(categoryCtx.getContext('2d'), config);
+}
+
+function createMonthlyChart() {
+    const monthlyCtx = document.getElementById('monthlyChart');
+    if (!monthlyCtx) return;
+    
+    new Chart(monthlyCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Monthly Spending',
+                data: [1200, 1500, 800, 2000, 1800, {{ total_amount | int }}],
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#667eea',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#667eea',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            return `₹${context.parsed.y.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString();
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart'
+            }
+        }
+    });
+}
+
+// Chart toggle functionality
+document.querySelectorAll('.chart-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const chartType = this.dataset.chart;
+        
+        // Update active state
+        this.parentNode.querySelectorAll('.chart-toggle').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Update chart
+        if (chartType === 'pie') {
+            createCategoryChart('doughnut');
+        } else if (chartType === 'bar') {
+            createCategoryChart('bar');
+        }
+    });
+});
+
+// Export functionality
+function exportTableData() {
+    const table = document.getElementById('categoryTable');
+    if (!table) return;
+    
+    let csv = 'Category,Count,Amount,Percentage\n';
+    
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const cols = row.querySelectorAll('td');
+        const category = cols[0].textContent.trim();
+        const count = cols[1].textContent.trim();
+        const amount = cols[2].textContent.trim();
+        const percentage = cols[3].textContent.trim();
+        
+        csv += `"${category}","${count}","${amount}","${percentage}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'monify_analytics.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function initializeAnimations() {
+    // Animate progress bars
+    setTimeout(() => {
+        document.querySelectorAll('.progress-fill').forEach(bar => {
+            bar.style.transition = 'width 1.5s ease-out';
+        });
+    }, 500);
+}
+</script>
+
+<!-- Animation Library -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+// Initialize animations
+AOS.init({
+    duration: 800,
+    once: true,
+    offset: 50
+});
+</script>
+
+<style>
+/* Enhanced Analytics Page - Consistent Design */
+.analytics-container {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 40px 0;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.analytics-blur-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1.5" fill="rgba(102,126,234,0.06)"/><circle cx="75" cy="45" r="2" fill="rgba(118,75,162,0.04)"/><circle cx="50" cy="75" r="1" fill="rgba(102,126,234,0.05)"/><circle cx="20" cy="80" r="1.2" fill="rgba(118,75,162,0.03)"/></svg>');
+}
+
+/* Enhanced Header */
+.analytics-header {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+.header-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.header-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.header-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.analytics-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
+}
+
+.analytics-subtitle {
+    font-size: 1.1rem;
+    color: #718096;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Stats Grid - Matching Auth Style */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.total-spending .stat-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.total-expenses .stat-icon {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.avg-expense .stat-icon {
+    background: linear-gradient(135deg, #17a2b8, #007bff);
+}
+
+.active-categories .stat-icon {
+    background: linear-gradient(135deg, #ffa726, #ff9800);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.stat-label {
+    color: #718096;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.stat-trend.up {
+    color: #28a745;
+}
+
+.stat-trend.down {
+    color: #dc3545;
+}
+
+.stat-trend.neutral {
+    color: #6c757d;
+}
+
+/* Charts Section */
+.charts-section {
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+.chart-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    height: 100%;
+}
+
+.chart-header {
+    padding: 25px 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.03), rgba(118, 75, 162, 0.03));
+}
+
+.chart-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2D3748;
+    margin: 0;
+}
+
+.chart-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.chart-toggle,
+.chart-export {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #6c757d;
+}
+
+.chart-toggle:hover,
+.chart-export:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.chart-toggle.active {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.chart-container {
+    padding: 30px;
+    height: 400px;
+    position: relative;
+}
+
+.chart-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 10;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Category Details */
+.category-details-section {
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 2;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2D3748;
+    margin: 0;
+}
+
+.section-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.details-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.enhanced-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.enhanced-table thead th {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.03), rgba(118, 75, 162, 0.03));
+    padding: 20px;
+    text-align: left;
+    font-weight: 600;
+    color: #2D3748;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.table-row {
+    transition: all 0.3s ease;
+}
+
+.table-row:hover {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.02), rgba(118, 75, 162, 0.02));
+}
+
+.table-row td {
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.category-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.category-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.count-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.amount-display {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+.percentage-display {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 1rem;
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1.5s ease-out;
+}
+
+.progress-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    min-width: 35px;
+}
+
+/* Insights Section */
+.insights-section {
+    position: relative;
+    z-index: 2;
+}
+
+.insight-card,
+.recommendation-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    height: 100%;
+}
+
+.insight-header,
+.recommendation-header {
+    padding: 25px 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.03), rgba(118, 75, 162, 0.03));
+}
+
+.insight-title,
+.recommendation-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2D3748;
+    margin: 0;
+}
+
+.insight-body,
+.recommendation-body {
+    padding: 30px;
+}
+
+.insight-item,
+.recommendation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.insight-item:last-child,
+.recommendation-item:last-child {
+    margin-bottom: 0;
+}
+
+.insight-icon,
+.recommendation-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.insight-content,
+.recommendation-content {
+    flex: 1;
+}
+
+.insight-content h6,
+.recommendation-content h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2D3748;
+    margin-bottom: 8px;
+}
+
+.insight-content p,
+.recommendation-content p {
+    color: #718096;
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Empty States */
+.empty-chart,
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #718096;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #e9ecef;
+    margin-bottom: 20px;
+}
+
+.empty-chart h4,
+.empty-state h4 {
+    font-size: 1.5rem;
+    color: #2D3748;
+    margin-bottom: 10px;
+}
+
+.empty-chart p,
+.empty-state p {
+    margin-bottom: 30px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .analytics-container {
+        padding: 20px 0;
+    }
+    
+    .header-content {
+        padding: 30px 25px;
+    }
+    
+    .analytics-title {
+        font-size: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .chart-container {
+        padding: 20px;
+        height: 300px;
+    }
+    
+    .enhanced-table {
+        font-size: 0.85rem;
+    }
+    
+    .enhanced-table thead th,
+    .table-row td {
+        padding: 15px 10px;
+    }
+    
+    .insight-item,
+    .recommendation-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+
+/* Button Styles */
+.btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-outline-primary {
+    background: transparent;
+    color: #667eea;
+    border: 1px solid #667eea;
+}
+
+.btn-outline-primary:hover {
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+}
+</style>
+{% endblock %}
