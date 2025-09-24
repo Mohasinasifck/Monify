@@ -2,7 +2,6 @@
 
 A beautiful, modern Flask web application for tracking personal expenses with advanced features and admin panel.
 
-![Monify Banner](https://via.placeholder.com/1200x300/667eea/ffffff?text=Monify+Expense+Tracker)
 
 [![GitHub Stars](https://img.shields.io/github/stars/Mohasinasifck/Monify?style=for-the-badge)](https://github.com/Mohasinasifck/Monify/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Mohasinasifck/Monify?style=for-the-badge)](https://github.com/Mohasinasifck/Monify/network/members)
@@ -36,24 +35,6 @@ A beautiful, modern Flask web application for tracking personal expenses with ad
 - **🎯 Intuitive UX** - Clean, user-friendly interface design
 - **🎪 Consistent Styling** - Professional design language throughout
 
-## 📸 Screenshots
-
-<details>
-<summary>📱 Click to view screenshots</summary>
-
-### 🏠 Landing Page
-![Landing Page](https://via.placeholder.com/800x500/667eea/ffffff?text=Landing+Page)
-
-### 📊 Dashboard
-![Dashboard](https://via.placeholder.com/800x500/28a745/ffffff?text=User+Dashboard)
-
-### 💰 Expense Management
-![Expenses](https://via.placeholder.com/800x500/ffc107/212529?text=Expense+Management)
-
-### 👨‍💼 Admin Panel
-![Admin Panel](https://via.placeholder.com/800x500/dc3545/ffffff?text=Admin+Dashboard)
-
-</details>
 
 ## 🚀 Quick Start
 
