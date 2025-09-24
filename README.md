@@ -59,9 +59,9 @@ conda activate monify
 ```
 
 - **🗄️ Initialize the database**
-  ```
-  python -c "from app import app, db; app.app_context().push(); db.create_all(); print('✅ Database initialized!')"
-  ```
+```
+python -c "from app import app, db; app.app_context().push(); db.create_all(); print('✅ Database initialized!')"
+```
 
 - **🚀 Run the application**
 ```
