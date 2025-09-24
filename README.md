@@ -74,8 +74,10 @@ python app.py
 2. **Admin Panel**: Visit `http://localhost:5000/admin/login`
 
 **Default Admin Credentials:**
-- Email: `admin@monify.com`
+- Email: `admin@monify.in`
 - Password: `admin123` ⚠️ **Change immediately after first login!**
+**Create intial Super Admin**
+- `'http://localhost:5000/admin/init-super-admin'`
 
 ## 📖 Usage Guide
 
